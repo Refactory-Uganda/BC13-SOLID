@@ -1,0 +1,17 @@
+#Requirements
+1. Abstraction
+2. Implementation
+#Computer (is the abstraction class)
+
+#Refined Abstraction
+ -Desktop
+ -Walltop
+ -Laptop
+
+#Brand is the implementation class
+ #Concrete Implemetors
+ -HP
+ -Dell
+ -Lenovo
+-Each brand has brand specific implementation 
+
