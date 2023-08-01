@@ -1,3 +1,5 @@
+import { log } from "console";
+
 class User {
 
     // Data
@@ -7,29 +9,29 @@ class User {
     private static user: any;
     //Methods
     private constructor(username: string, password: string) {
-        this.username=username
-        this.password = password;     
+        this.username = username
+        this.password = password;
     }
 
-    public static login(credentials:any) {
+    public static login(credentials: any) {
         if (!User.user) {
-            return User.user = new User(credentials.username, credentials.password);     
+            return User.user = new User(credentials.username, credentials.password);
         } else {
-           return  User.user;
+            return User.user;
         }
     }
 
     public static logout() {
-        User.user = null;    
+        User.user = null;
     }
 
     getUsername() {
-        return this.username; 
+        return this.username;
     }
     getPassword() {
-        return this.password; 
+        return this.password;
     }
-    
+
 }
 
 // let user1:User = User.login({username:"Juan", password:"pswd"})
@@ -39,6 +41,7 @@ class User {
 
 // let user2:User = User.login({username:"Emmanuel", password:"pswd"})
 // console.log(user2.getUsername(), user2.getPassword());
+
 
 // Input Devices
 interface InputDevice {
@@ -158,14 +161,14 @@ abstract class Computer {
     private brand: string;
     private model: string;
     private user: User;
-        //User.login({ username: "Williamz", password: "Password" });
     private inputDevice: InputDevice;
     private proccessorChip: ProccessorChip;
     private storageDevice: StorageDevice;
     private outputDevice: OutputDevice;
+    private description: string;
 
     // Methods
-    constructor(brand, model, inputDevice: InputDevice, proccessorChip: ProccessorChip, storageDevice: StorageDevice, outputDevice: OutputDevice, user:User) {
+    constructor(brand, model, inputDevice: InputDevice, proccessorChip: ProccessorChip, storageDevice: StorageDevice, outputDevice: OutputDevice, user: User, description) {
         this.brand = brand;
         this.model = model;
         this.inputDevice = inputDevice;
@@ -173,6 +176,7 @@ abstract class Computer {
         this.storageDevice = storageDevice;
         this.outputDevice = outputDevice;
         this.user = user;
+        this.description = description;
     }
 
     input(data: any) {
@@ -241,12 +245,23 @@ abstract class Computer {
         return this.user;
     }
 
+    //setter for decor pattern
+    setDescription(description:string){
+        this.description = description;
+    }
+
+    //getter for decor pattern
+    getDescription() {
+        return this.description;
+    }
+
 }
 
 class Desktop extends Computer {
     // Fields
 
     // Methods
+   
 }
 
 class Laptop extends Computer {
@@ -267,32 +282,77 @@ class Walltop extends Computer {
 
 }
 
-
+// Decorator pattern
+    //abstract decorator
+    abstract class Accessories extends Computer {
+        computer: Computer;
+        constructor(computer: Computer) {
+            super(computer.getBrand(), computer.getModel(), computer.getInputDevice(), computer.getProcessorChip(), computer.getStorageDevice(), computer.getOutputDevice(), computer.getUser(), computer.getDescription());
+            this.computer = computer;
+        }
+    }
+    
+        //concrete decorator
+    class ScreenGuard extends Accessories {
+        
+        getDescription() {
+            return this.computer.getDescription() + ", screenguard";
+        }
+    
+    }
+    
+    class KeyBoardCover extends Accessories {
+        
+        getDescription() {
+            return this.computer.getDescription() + ", keyboard cover";
+        }
+    
+    }
+    
+    class MousePad extends Accessories {
+        
+        getDescription() {
+            return this.computer.getDescription() + ", mouse pad";
+        }
+    
+    }
+    
 // Objects
 let computer: Computer;
 // can be a Desktop Computer
-computer = new Desktop("HP", "XP-X2", new Mouse(), new Intel(), new InternalMemory(), new Projector(), User.login({username:"Williamz",password:"Pwd"}));
-computer.setBrand("DELL");
+computer = new Desktop("HP", "XP-X2", new Mouse(), new Intel(), new InternalMemory(), new Projector(), User.login({ username: "Williamz", password: "Pwd" }), "basic");
+// computer.setBrand("DELL");
 console.log(computer.getBrand());
-console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
-User.logout();
+// console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
+// User.logout();
 
-// can be a Laptop Computer
-computer = new Laptop("HP", "XP-X2", new KeyBoard(), new AMD(), new SSD(), new Monitor(), User.login({username:"James",password:"password"}));
-computer.process('cccgdnbhx');
-computer.setInputDevice(new Mouse());
-console.log(computer.getInputDevice());
-computer.input("");
-console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
-User.logout();
+console.log("with design:", computer.getDescription());
+//decorator
+let compwithScreenGuard: Computer = new ScreenGuard(computer);
+console.log("With design:",compwithScreenGuard.getDescription());
 
-// // can be a walltop Computer
-computer = new Walltop("HP", "XP-X2", new KeyBoard(), new Nvidia, new HDD(), new Projector(), User.login({username:"Kevin",password:"password"}));
-computer.store('cccgdnbhx');
-computer.setStorageDevice(new SSD());
-console.log(computer.getStorageDevice());
-computer.store('x');
-console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
+
+
+
+
+
+// // can be a Laptop Computer
+// computer = new Laptop("HP", "XP-X2", new KeyBoard(), new AMD(), new SSD(), new Monitor(), User.login({ username: "James", password: "password" }));
+// computer.process('cccgdnbhx');
+// computer.setInputDevice(new Mouse());
+// console.log(computer.getInputDevice());
+// computer.input("");
+// console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
+// User.logout();
+
+
+// // // can be a walltop Computer
+// computer = new Walltop("HP", "XP-X2", new KeyBoard(), new Nvidia, new HDD(), new Projector(), User.login({ username: "Kevin", password: "password" }));
+// computer.store('cccgdnbhx');
+// computer.setStorageDevice(new SSD());
+// console.log(computer.getStorageDevice());
+// computer.store('x');
+// console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
 
 
 
