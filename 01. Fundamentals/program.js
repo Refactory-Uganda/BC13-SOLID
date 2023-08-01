@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -13,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+Object.defineProperty(exports, "__esModule", { value: true });
 var User = /** @class */ (function () {
     //Methods
     function User(username, password) {
@@ -143,7 +145,7 @@ var Projector = /** @class */ (function () {
 // Computer Classes
 var Computer = /** @class */ (function () {
     // Methods
-    function Computer(brand, model, inputDevice, proccessorChip, storageDevice, outputDevice, user) {
+    function Computer(brand, model, inputDevice, proccessorChip, storageDevice, outputDevice, user, description) {
         this.brand = brand;
         this.model = model;
         this.inputDevice = inputDevice;
@@ -151,6 +153,7 @@ var Computer = /** @class */ (function () {
         this.storageDevice = storageDevice;
         this.outputDevice = outputDevice;
         this.user = user;
+        this.description = description;
     }
     Computer.prototype.input = function (data) {
         this.inputDevice.input(data);
@@ -210,6 +213,14 @@ var Computer = /** @class */ (function () {
     Computer.prototype.getUser = function () {
         return this.user;
     };
+    //setter for decor pattern
+    Computer.prototype.setDescription = function (description) {
+        this.description = description;
+    };
+    //getter for decor pattern
+    Computer.prototype.getDescription = function () {
+        return this.description;
+    };
     return Computer;
 }());
 var Desktop = /** @class */ (function (_super) {
@@ -240,26 +251,72 @@ var Walltop = /** @class */ (function (_super) {
     }
     return Walltop;
 }(Computer));
+// Decorator pattern
+//abstract decorator
+var Accessories = /** @class */ (function (_super) {
+    __extends(Accessories, _super);
+    function Accessories(computer) {
+        var _this = _super.call(this, computer.getBrand(), computer.getModel(), computer.getInputDevice(), computer.getProcessorChip(), computer.getStorageDevice(), computer.getOutputDevice(), computer.getUser(), computer.getDescription()) || this;
+        _this.computer = computer;
+        return _this;
+    }
+    return Accessories;
+}(Computer));
+//concrete decorator
+var ScreenGuard = /** @class */ (function (_super) {
+    __extends(ScreenGuard, _super);
+    function ScreenGuard() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ScreenGuard.prototype.getDescription = function () {
+        return this.computer.getDescription() + ", screenguard";
+    };
+    return ScreenGuard;
+}(Accessories));
+var KeyBoardCover = /** @class */ (function (_super) {
+    __extends(KeyBoardCover, _super);
+    function KeyBoardCover() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    KeyBoardCover.prototype.getDescription = function () {
+        return this.computer.getDescription() + ", keyboard cover";
+    };
+    return KeyBoardCover;
+}(Accessories));
+var MousePad = /** @class */ (function (_super) {
+    __extends(MousePad, _super);
+    function MousePad() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    MousePad.prototype.getDescription = function () {
+        return this.computer.getDescription() + ", mouse pad";
+    };
+    return MousePad;
+}(Accessories));
 // Objects
 var computer;
 // can be a Desktop Computer
-computer = new Desktop("HP", "XP-X2", new Mouse(), new Intel(), new InternalMemory(), new Projector(), User.login({ username: "Williamz", password: "Pwd" }));
-computer.setBrand("DELL");
+computer = new Desktop("HP", "XP-X2", new Mouse(), new Intel(), new InternalMemory(), new Projector(), User.login({ username: "Williamz", password: "Pwd" }), "basic");
+// computer.setBrand("DELL");
 console.log(computer.getBrand());
-console.log(computer.getUser().getUsername(), computer.getUser().getPassword());
-User.logout();
-// can be a Laptop Computer
-computer = new Laptop("HP", "XP-X2", new KeyBoard(), new AMD(), new SSD(), new Monitor(), User.login({ username: "James", password: "password" }));
-computer.process('cccgdnbhx');
-computer.setInputDevice(new Mouse());
-console.log(computer.getInputDevice());
-computer.input("");
-console.log(computer.getUser().getUsername(), computer.getUser().getPassword());
-User.logout();
-// // can be a walltop Computer
-computer = new Walltop("HP", "XP-X2", new KeyBoard(), new Nvidia, new HDD(), new Projector(), User.login({ username: "Kevin", password: "password" }));
-computer.store('cccgdnbhx');
-computer.setStorageDevice(new SSD());
-console.log(computer.getStorageDevice());
-computer.store('x');
-console.log(computer.getUser().getUsername(), computer.getUser().getPassword());
+// console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
+// User.logout();
+console.log("with design:", computer.getDescription());
+//decorator
+var compwithScreenGuard = new ScreenGuard(computer);
+console.log("With design:", compwithScreenGuard.getDescription());
+// // can be a Laptop Computer
+// computer = new Laptop("HP", "XP-X2", new KeyBoard(), new AMD(), new SSD(), new Monitor(), User.login({ username: "James", password: "password" }));
+// computer.process('cccgdnbhx');
+// computer.setInputDevice(new Mouse());
+// console.log(computer.getInputDevice());
+// computer.input("");
+// console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
+// User.logout();
+// // // can be a walltop Computer
+// computer = new Walltop("HP", "XP-X2", new KeyBoard(), new Nvidia, new HDD(), new Projector(), User.login({ username: "Kevin", password: "password" }));
+// computer.store('cccgdnbhx');
+// computer.setStorageDevice(new SSD());
+// console.log(computer.getStorageDevice());
+// computer.store('x');
+// console.log(computer.getUser().getUsername(), computer.getUser().getPassword())
